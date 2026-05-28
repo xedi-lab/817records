@@ -1,7 +1,7 @@
 export interface TimeSlot {
   id: string
-  date: string        // YYYY-MM-DD
-  start_time: string  // HH:MM
+  date: string
+  start_time: string
   end_time: string
   is_available: boolean
 }
@@ -34,3 +34,18 @@ export interface Client {
 }
 
 export type BookingStatus = Booking['status']
+
+export type BookingStep = 'date' | 'time' | 'duration' | 'contact' | 'summary' | 'done'
+
+export type Page = 'home' | 'booking' | 'my-bookings' | 'admin'
+
+export interface BookingDraft {
+  date: string | null
+  dateLabel: string | null
+  startTime: string | null
+  endTime: string | null
+  hours: number
+  name: string
+  phone: string
+  comment: string
+}

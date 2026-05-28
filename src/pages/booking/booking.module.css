@@ -1,0 +1,100 @@
+.section { display: flex; flex-direction: column; gap: 12px; }
+
+.label { font-size: 18px; font-weight: 700; color: var(--text); }
+.sublabel { font-size: 13px; color: var(--text-secondary); margin-top: -4px; }
+.empty { font-size: 14px; color: var(--text-secondary); text-align: center; padding: 24px 0; }
+
+/* ── Calendar ── */
+.calNav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.calMonth { font-size: 15px; font-weight: 600; color: var(--text); }
+.calArrow {
+  display: flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px;
+  border-radius: var(--radius-sm); color: var(--text);
+  transition: background var(--transition);
+}
+.calArrow:hover { background: var(--surface-hover); }
+
+.calGrid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+.calDayName { font-size: 11px; font-weight: 500; color: var(--text-secondary); text-align: center; padding: 4px 0; }
+
+.calDay {
+  position: relative;
+  aspect-ratio: 1;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 500;
+  color: var(--text-secondary);
+  border-radius: var(--radius-sm);
+  transition: background var(--transition), color var(--transition);
+}
+.calDayAvail { color: var(--text); font-weight: 600; }
+.calDayAvail:hover { background: var(--surface-hover); }
+.calDayToday { background: var(--surface-hover); color: var(--text); }
+.calDaySelected { background: var(--accent) !important; color: var(--accent-text) !important; }
+.calDayPast { opacity: 0.3; }
+.dot { position: absolute; bottom: 3px; width: 4px; height: 4px; border-radius: 50%; background: var(--accent); }
+
+/* ── Time grid ── */
+.timeGrid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+.timeBtn {
+  padding: 12px 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  font-size: 14px; font-weight: 600; color: var(--text);
+  text-align: center;
+  transition: background var(--transition), border-color var(--transition), color var(--transition);
+  -webkit-tap-highlight-color: transparent;
+}
+.timeBtn:hover { background: var(--surface-hover); }
+.timeBtnActive { background: var(--accent) !important; color: var(--accent-text) !important; border-color: var(--accent) !important; }
+.timeBtnDisabled { opacity: 0.35; cursor: not-allowed; }
+
+/* ── Duration counter ── */
+.counterRow { display: flex; align-items: center; justify-content: space-between; }
+.counterLabel { font-size: 15px; font-weight: 600; color: var(--text); }
+.counter { display: flex; align-items: center; gap: 20px; }
+.counterBtn {
+  width: 36px; height: 36px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  font-size: 20px; color: var(--text);
+  display: flex; align-items: center; justify-content: center;
+  transition: background var(--transition);
+}
+.counterBtn:hover:not(:disabled) { background: var(--surface-hover); }
+.counterBtn:disabled { opacity: 0.3; cursor: not-allowed; }
+.counterVal { font-size: 22px; font-weight: 700; color: var(--text); min-width: 48px; text-align: center; }
+
+.priceRow {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 14px 16px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.priceLabel { font-size: 14px; color: var(--text-secondary); }
+.priceVal { font-size: 20px; font-weight: 700; color: var(--text); }
+
+/* ── Phone / form ── */
+.inputWrap { display: flex; flex-direction: column; gap: 6px; }
+.inputLabel { font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-secondary); }
+.input {
+  width: 100%; padding: 14px 16px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 17px; color: var(--text); outline: none;
+  transition: border-color var(--transition);
+}
+.input:focus { border-color: var(--accent); }
+.input::placeholder { color: var(--text-secondary); opacity: 0.5; }
+.inputError { border-color: var(--danger) !important; }
+.errorMsg { font-size: 13px; color: var(--danger); padding: 0 4px; }
+
+/* ── Summary ── */
+.summaryRows { display: flex; flex-direction: column; gap: 10px; }
+.summaryRow { display: flex; justify-content: space-between; align-items: center; }
+.summaryKey { font-size: 14px; color: var(--text-secondary); }
+.summaryVal { font-size: 14px; font-weight: 500; color: var(--text); }
+.summaryDivider { height: 1px; background: var(--border); margin: 4px 0; }
+.summaryPrice { font-size: 18px; font-weight: 700; color: var(--text); }
+.hint { font-size: 13px; color: var(--text-secondary); text-align: center; line-height: 1.5; }
