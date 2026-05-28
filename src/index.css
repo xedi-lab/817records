@@ -1,6 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;0,14..32,900&display=swap');
 
-/* ── Theme variables ── */
 :root {
   --bg: #ffffff;
   --surface: #f5f5f5;
@@ -13,6 +12,7 @@
   --danger: #e53935;
   --radius: 12px;
   --radius-sm: 8px;
+  --nav-height: 64px;
   --transition: 0.18s ease;
 }
 
@@ -27,9 +27,7 @@
   --accent-text: #000000;
 }
 
-/* ── Reset ── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
 html, body, #root { height: 100%; min-height: 100dvh; }
 
 body {
@@ -39,7 +37,6 @@ body {
   font-size: 15px;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
-  transition: background var(--transition), color var(--transition);
   overscroll-behavior: none;
 }
 
@@ -50,8 +47,14 @@ input, textarea { font-family: inherit; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
-/* ── Page layout ── */
 .page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  padding-bottom: calc(var(--nav-height) + env(safe-area-inset-bottom, 0px));
+}
+
+.page-no-nav {
   display: flex;
   flex-direction: column;
   min-height: 100dvh;
@@ -66,11 +69,22 @@ input, textarea { font-family: inherit; }
   gap: 12px;
 }
 
-/* ── Animations ── */
+/* ── Tab page transitions ── */
+@keyframes tab-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
 @keyframes fade-in {
   from { opacity: 0; transform: translateY(6px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-.fade-in { animation: fade-in 0.22s ease forwards; }
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.tab-in   { animation: tab-in 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.fade-in  { animation: fade-in 0.22s ease forwards; }
+.slide-up { animation: slide-up 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 
 @keyframes spin { to { transform: rotate(360deg); } }

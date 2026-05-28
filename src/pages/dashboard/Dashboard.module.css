@@ -1,0 +1,378 @@
+.wrap { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+.tabsWrap {
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  transition: background var(--transition), border-color var(--transition);
+}
+
+.tabs {
+  display: flex;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 0 16px;
+}
+.tabs::-webkit-scrollbar { display: none; }
+
+.tab {
+  flex-shrink: 0;
+  padding: 13px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+  transition: color var(--transition), border-color var(--transition);
+}
+
+.tabActive {
+  color: var(--text);
+  border-bottom-color: var(--accent);
+  font-weight: 600;
+}
+
+/* Shared dashboard card */
+.statGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+.statCard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  transition: background var(--transition), border-color var(--transition);
+}
+
+.statCard.span2 { grid-column: span 2; }
+
+.statVal {
+  font-size: 36px;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -1px;
+  color: var(--text);
+}
+
+.statVal.amber { color: #d97706; }
+
+.statLabel {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+/* Section header */
+.sectionLabel {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-secondary);
+}
+
+/* Booking card */
+.bookingCard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: background var(--transition), border-color var(--transition);
+}
+
+.bookingHead {
+  padding: 14px 14px 10px;
+}
+
+.bookingName { font-size: 14px; font-weight: 600; color: var(--text); }
+.bookingUser { font-size: 12px; color: var(--text-secondary); }
+
+.bookingMeta {
+  display: flex; gap: 12px; flex-wrap: wrap;
+  font-size: 13px; color: var(--text-secondary);
+  padding: 0 14px 10px;
+}
+.bookingMeta strong { color: var(--text); font-weight: 700; }
+
+.bookingComment {
+  margin: 0 14px 10px;
+  background: var(--surface-hover);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+.bookingActions {
+  display: flex;
+  border-top: 1px solid var(--border);
+}
+
+.actBtn {
+  flex: 1;
+  padding: 11px;
+  font-size: 13px;
+  font-weight: 600;
+  transition: opacity 0.12s;
+  text-align: center;
+}
+.actBtn:active { opacity: 0.6; }
+.actBtn + .actBtn { border-left: 1px solid var(--border); }
+
+.actOk     { color: #16a34a; }
+.actCancel { color: #dc2626; }
+.actDone   { color: var(--text-secondary); font-weight: 500; }
+
+/* Client card */
+.clientCard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  transition: background var(--transition), border-color var(--transition);
+}
+
+.clientName  { font-size: 14px; font-weight: 600; color: var(--text); }
+.clientUser  { font-size: 12px; color: var(--text-secondary); }
+.clientPhone { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+.clientStats { text-align: right; }
+.clientCount { font-size: 20px; font-weight: 900; color: var(--text); line-height: 1; }
+.clientHours { font-size: 11px; color: var(--text-secondary); }
+.clientLast  { font-size: 11px; color: var(--text-secondary); margin-top: 8px; }
+
+/* Slot manager */
+.slotDay {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.slotDayHead {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.slotDayDate { font-size: 14px; font-weight: 700; color: var(--text); }
+.slotDayDay  { font-size: 12px; color: var(--text-secondary); }
+
+.slotList { display: flex; flex-direction: column; }
+
+.slotItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+.slotItem:last-child { border-bottom: none; }
+
+.slotTime { font-weight: 600; color: var(--text); }
+
+.slotDel {
+  font-size: 18px;
+  color: var(--text-secondary);
+  line-height: 1;
+  padding: 2px 6px;
+  border-radius: 6px;
+  transition: background var(--transition), color var(--transition);
+}
+.slotDel:hover { background: var(--surface-hover); color: var(--danger); }
+
+.slotAddForm {
+  padding: 12px 14px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  background: var(--surface-hover);
+  border-top: 1px solid var(--border);
+}
+
+.timeInput {
+  flex: 1;
+  min-width: 90px;
+  padding: 8px 10px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  color: var(--text);
+  outline: none;
+  transition: border-color var(--transition);
+}
+.timeInput:focus { border-color: var(--accent); }
+
+/* Analytics */
+.periodTabs {
+  display: flex;
+  gap: 6px;
+}
+
+.periodTab {
+  flex: 1;
+  padding: 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: var(--surface);
+  transition: background var(--transition), color var(--transition), border-color var(--transition);
+}
+
+.periodTab.active {
+  background: var(--accent);
+  color: var(--accent-text);
+  border-color: var(--accent);
+}
+
+.barChart { display: flex; flex-direction: column; gap: 6px; }
+
+.barRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+}
+
+.barDate { width: 52px; flex-shrink: 0; color: var(--text-secondary); font-weight: 500; }
+
+.barWrap {
+  flex: 1;
+  height: 24px;
+  background: var(--surface);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.barFill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  padding-left: 8px;
+  transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  min-width: 2px;
+}
+
+.barCount {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent-text);
+  white-space: nowrap;
+}
+
+/* Broadcast */
+.broadcastTextarea {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  font-size: 15px;
+  color: var(--text);
+  outline: none;
+  resize: none;
+  min-height: 120px;
+  transition: border-color var(--transition);
+}
+.broadcastTextarea:focus { border-color: var(--accent); }
+.broadcastTextarea::placeholder { color: var(--text-secondary); opacity: 0.5; }
+
+.broadcastHint {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.broadcastResult {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  text-align: center;
+}
+
+.broadcastResult strong {
+  font-size: 28px;
+  font-weight: 900;
+  display: block;
+  margin-bottom: 4px;
+}
+
+/* Filter chips */
+.filterRow {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.filterRow::-webkit-scrollbar { display: none; }
+
+.chip {
+  flex-shrink: 0;
+  padding: 6px 12px;
+  border-radius: 99px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  font-size: 12px; font-weight: 500;
+  color: var(--text-secondary);
+  transition: all var(--transition);
+}
+.chip.active {
+  background: var(--accent);
+  color: var(--accent-text);
+  border-color: var(--accent);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #d97706;
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  border-radius: 99px;
+  padding: 1px 6px;
+  min-width: 18px;
+  margin-left: 4px;
+}
+
+/* Status dots */
+.statusDot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 5px;
+}
+.dot-pending   { background: #d97706; }
+.dot-confirmed { background: #16a34a; }
+.dot-cancelled { background: #dc2626; }
+.dot-completed { background: var(--text-secondary); }
+
+/* Export button */
+.exportBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  transition: background var(--transition);
+}
+.exportBtn:active { opacity: 0.7; }

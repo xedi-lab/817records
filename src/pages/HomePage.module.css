@@ -1,0 +1,87 @@
+.page {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* GIF placeholder */
+.gifPlaceholder {
+  height: 240px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background var(--transition), border-color var(--transition);
+}
+
+.gifText {
+  font-size: 80px;
+  font-weight: 900;
+  letter-spacing: -3px;
+  color: var(--text-secondary);
+  line-height: 1;
+  opacity: 0.15;
+}
+
+.gifStar { color: var(--text-secondary); }
+
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 24px 16px 20px;
+  gap: 24px;
+}
+
+.info {}
+
+.heroTitle {
+  font-size: clamp(64px, 20vw, 88px);
+  font-weight: 900;
+  line-height: 0.9;
+  letter-spacing: -3px;
+  color: var(--text);
+}
+
+.star { color: var(--text); }
+
+.city {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-top: 8px;
+  letter-spacing: 0.05em;
+}
+
+.meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.metaRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 14px;
+  font-size: 13px;
+  border-bottom: 1px solid var(--border);
+}
+.metaRow:last-child { border-bottom: none; }
+
+.metaLabel { color: var(--text-secondary); font-weight: 500; }
+.metaValue { color: var(--text); font-weight: 600; text-align: right; }
+
+.actions { display: flex; flex-direction: column; gap: 10px; }
+
+.greeting {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 2px;
+}

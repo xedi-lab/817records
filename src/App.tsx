@@ -1,24 +1,34 @@
 import { useEffect, useState } from 'react'
 import { useTheme } from './hooks/useTheme'
 import { initTwa, getTwaUser, haptic } from './lib/twa'
+import { api } from './lib/api'
 import { Header } from './components/Header'
+import { BottomNav, type NavTab } from './components/BottomNav'
 import { Button } from './components/Button'
+import { HomePage } from './pages/HomePage'
+import { MediaPage } from './pages/MediaPage'
+import { DashboardPage } from './pages/dashboard/DashboardPage'
 import { DateSelect } from './pages/booking/DateSelect'
 import { TimeSelect } from './pages/booking/TimeSelect'
 import { DurationSelect } from './pages/booking/DurationSelect'
 import { ContactInput } from './pages/booking/ContactInput'
 import { Summary } from './pages/booking/Summary'
-import { AdminPage } from './pages/AdminPage'
-import type { BookingDraft, BookingStep, Page } from './types'
+import type { BookingDraft, BookingStep } from './types'
 import styles from './App.module.css'
 
 const ADMIN_IDS = [7639287231]
 
 const emptyDraft = (): BookingDraft => ({
-  date: null, dateLabel: null,
-  startTime: null, endTime: null,
+  date: null, dateLabel: null, startTime: null, endTime: null,
   hours: 2, name: '', phone: '', comment: '',
 })
+
+const STEP_TITLES: Record<BookingStep, string> = {
+  date: 'Выбор даты', time: 'Выбор времени',
+  duration: 'Длительность', contact: 'Контакт',
+  summary: 'Подтверждение', done: 'Готово',
+}
+const STEPS: BookingStep[] = ['date', 'time', 'duration', 'contact', 'summary', 'done']
 
 export default function App() {
   const tgUser = getTwaUser()
@@ -27,79 +37,73 @@ export default function App() {
 
   const isAdmin = tgUser ? ADMIN_IDS.includes(tgUser.id) : false
 
-  const [page, setPage] = useState<Page>('home')
-  const [step, setStep] = useState<BookingStep>('date')
+  const [tab, setTab] = useState<NavTab>('home')
+  const [booking, setBooking] = useState<BookingStep | null>(null)
   const [draft, setDraft] = useState<BookingDraft>(emptyDraft())
 
-  useEffect(() => { try { initTwa() } catch {} }, [])
-
-  const steps: BookingStep[] = ['date', 'time', 'duration', 'contact', 'summary', 'done']
-  const stepTitles: Record<BookingStep, string> = {
-    date: 'Выбор даты', time: 'Выбор времени',
-    duration: 'Длительность', contact: 'Контакт',
-    summary: 'Подтверждение', done: 'Готово',
-  }
-
-  function startBooking() { haptic('medium'); setPage('booking'); setStep('date') }
-
-  function handleBack() {
-    if (page === 'booking') {
-      const idx = steps.indexOf(step)
-      if (idx <= 0) { setPage('home'); return }
-      setStep(steps[idx - 1])
-    } else {
-      setPage('home')
+  useEffect(() => {
+    try { initTwa() } catch {}
+    if (tgUser) {
+      api.trackVisit({ telegram_id: tgUser.id, first_name: tgUser.first_name, username: tgUser.username }).catch(() => {})
     }
+  }, [])
+
+  function startBooking() {
+    haptic('medium')
+    setDraft(emptyDraft())
+    setBooking('date')
   }
 
-  // ── Booking flow ──────────────────────────────────────────────────────
-  if (page === 'booking') {
+  function handleBookBack() {
+    const idx = STEPS.indexOf(booking!)
+    if (idx <= 0) { setBooking(null); setTab('home') }
+    else setBooking(STEPS[idx - 1])
+  }
+
+  function handleTabChange(t: NavTab) {
+    haptic('light')
+    setTab(t)
+    if (t === 'book') { startBooking() }
+  }
+
+  // ── Booking flow (full screen, no bottom nav) ──────────────────────────────
+  if (booking !== null) {
     return (
-      <div className="page">
-        <Header theme={theme} onToggleTheme={toggleTheme} onBack={handleBack} title={stepTitles[step]} />
+      <div className="page-no-nav">
+        <Header theme={theme} onToggleTheme={toggleTheme} onBack={handleBookBack} title={STEP_TITLES[booking]} />
         <div className="page-content">
-          {step === 'date' && (
+          {booking === 'date' && (
             <DateSelect onSelect={(date, label) => {
-              haptic('light')
-              setDraft(d => ({ ...d, date, dateLabel: label }))
-              setStep('time')
+              haptic('light'); setDraft(d => ({ ...d, date, dateLabel: label })); setBooking('time')
             }} />
           )}
-          {step === 'time' && (
-            <TimeSelect date={draft.date!} onSelect={startTime => {
-              haptic('light')
-              setDraft(d => ({ ...d, startTime }))
-              setStep('duration')
+          {booking === 'time' && (
+            <TimeSelect date={draft.date!} onSelect={t => {
+              haptic('light'); setDraft(d => ({ ...d, startTime: t })); setBooking('duration')
             }} />
           )}
-          {step === 'duration' && (
+          {booking === 'duration' && (
             <DurationSelect startTime={draft.startTime!} onNext={(hours, endTime) => {
-              haptic('light')
-              setDraft(d => ({ ...d, hours, endTime }))
-              setStep('contact')
+              haptic('light'); setDraft(d => ({ ...d, hours, endTime })); setBooking('contact')
             }} />
           )}
-          {step === 'contact' && (
+          {booking === 'contact' && (
             <ContactInput
               initialName={tgUser ? `${tgUser.first_name}${tgUser.last_name ? ' ' + tgUser.last_name : ''}` : ''}
               onNext={(name, phone, comment) => {
-                haptic('light')
-                setDraft(d => ({ ...d, name, phone, comment }))
-                setStep('summary')
+                haptic('light'); setDraft(d => ({ ...d, name, phone, comment })); setBooking('summary')
               }}
             />
           )}
-          {step === 'summary' && (
-            <Summary draft={draft} tgUser={tgUser} onDone={() => { haptic('success'); setStep('done') }} />
+          {booking === 'summary' && (
+            <Summary draft={draft} tgUser={tgUser} onDone={() => { haptic('success'); setBooking('done') }} />
           )}
-          {step === 'done' && (
+          {booking === 'done' && (
             <div className={styles.doneScreen}>
               <div className={styles.doneIcon}>✓</div>
               <h2 className={styles.doneTitle}>Заявка отправлена!</h2>
-              <p className={styles.doneSub}>
-                Рассмотрим и уведомим тебя в Telegram
-              </p>
-              <Button fullWidth onClick={() => { setPage('home'); setDraft(emptyDraft()) }}>
+              <p className={styles.doneSub}>Рассмотрим и уведомим тебя в Telegram</p>
+              <Button fullWidth onClick={() => { setBooking(null); setTab('home'); setDraft(emptyDraft()) }}>
                 На главную
               </Button>
             </div>
@@ -109,38 +113,18 @@ export default function App() {
     )
   }
 
-  // ── Admin ─────────────────────────────────────────────────────────────
-  if (page === 'admin') {
-    return (
-      <div className="page">
-        <Header theme={theme} onToggleTheme={toggleTheme} onBack={() => setPage('home')} title="Управление" />
-        <AdminPage />
-      </div>
-    )
-  }
-
-  // ── Home ──────────────────────────────────────────────────────────────
+  // ── Main layout with bottom nav ────────────────────────────────────────────
   return (
     <div className="page">
       <Header theme={theme} onToggleTheme={toggleTheme} />
 
-      <div className={styles.homeContent}>
-        <div className={styles.hero}>
-          <p className={styles.heroLabel}>Студия звукозаписи</p>
-          <h1 className={styles.heroTitle}>817<span className={styles.heroStar}>*</span></h1>
-          <p className={styles.heroCity}>Санкт-Петербург</p>
-        </div>
-
-        <div className={styles.homeActions}>
-          {tgUser && <p className={styles.greeting}>Привет, {tgUser.first_name}</p>}
-          <Button fullWidth onClick={startBooking}>Забронировать</Button>
-          {isAdmin && (
-            <Button fullWidth variant="ghost" onClick={() => setPage('admin')}>
-              Панель управления
-            </Button>
-          )}
-        </div>
+      <div className={styles.tabContent} key={tab}>
+        {tab === 'home'      && <HomePage userName={tgUser?.first_name} onBook={startBooking} />}
+        {tab === 'media'     && <MediaPage />}
+        {tab === 'dashboard' && <DashboardPage />}
       </div>
+
+      <BottomNav active={tab} onChange={handleTabChange} isAdmin={isAdmin} />
     </div>
   )
 }
