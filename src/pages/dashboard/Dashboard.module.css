@@ -262,9 +262,8 @@
   border: 2px solid currentColor;
   border-top-color: transparent;
   border-radius: 50%;
-  animation: act-spin 0.65s linear infinite;
+  animation: spin 0.65s linear infinite;
 }
-@keyframes act-spin { to { transform: rotate(360deg); } }
 
 /* Client card */
 .clientCard {
@@ -504,6 +503,62 @@
 .dot-confirmed { background: #16a34a; }
 .dot-cancelled { background: #dc2626; }
 .dot-completed { background: var(--text-secondary); }
+
+/* Slot add button */
+.slotAddBtn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--surface-hover);
+  border: 1px solid var(--border);
+  font-size: 18px;
+  line-height: 1;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background var(--transition), color var(--transition);
+}
+.slotAddBtn:hover { background: var(--border); color: var(--text); }
+
+.slotEmpty {
+  padding: 10px 14px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* Broadcast */
+.broadcastAudience {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 99px;
+  padding: 6px 14px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  align-self: flex-start;
+}
+
+.broadcastDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #16a34a;
+  flex-shrink: 0;
+}
+
+.charCount {
+  position: absolute;
+  bottom: 10px;
+  right: 14px;
+  font-size: 11px;
+  color: var(--text-secondary);
+  pointer-events: none;
+}
 
 /* Export button */
 .exportBtn {

@@ -55,7 +55,7 @@ export function MediaPage() {
           <p className={styles.eyebrow}>Контакты</p>
           <div className={styles.contactsList}>
             <ContactRow label="Telegram" value="@msc817" href="https://t.me/msc817" />
-            <ContactRow label="Адрес"    value="м. Бутырская, Огородный пр. 8с1" />
+            <ContactRow label="Адрес"    value="г. Москва, м. Бутырская, Огородный пр. 8с1" />
             <ContactRow label="Часы"     value="10:00 — 22:00 ежедневно" />
           </div>
         </section>

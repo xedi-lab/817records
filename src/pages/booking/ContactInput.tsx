@@ -14,10 +14,18 @@ export function ContactInput({ initialName, onNext }: Props) {
   const [touched, setTouched] = useState(false)
 
   const nameError = touched && !name.trim()
+  const phoneError = touched && phone.replace(/\D/g, '').length < 11
+
+  function handlePhone(e: React.ChangeEvent<HTMLInputElement>) {
+    const digits = e.target.value.replace(/\D/g, '')
+    const local = digits.startsWith('7') || digits.startsWith('8') ? digits.slice(1) : digits
+    const capped = local.slice(0, 10)
+    setPhone(capped ? '+7' + capped : '')
+  }
 
   function submit() {
     setTouched(true)
-    if (!name.trim()) return
+    if (!name.trim() || phone.replace(/\D/g, '').length < 11) return
     onNext(name.trim(), phone.trim(), comment.trim())
   }
 
@@ -37,14 +45,16 @@ export function ContactInput({ initialName, onNext }: Props) {
       </div>
 
       <div className={styles.inputWrap}>
-        <label className={styles.inputLabel}>Телефон</label>
+        <label className={styles.inputLabel}>Телефон *</label>
         <input
-          className={styles.input}
+          className={[styles.input, phoneError ? styles.inputError : ''].join(' ')}
           type="tel"
+          inputMode="numeric"
           value={phone}
-          onChange={e => setPhone(e.target.value)}
-          placeholder="+7 999 000 00 00"
+          onChange={handlePhone}
+          placeholder="+7 — введи номер"
         />
+        {phoneError && <span className={styles.errorMsg}>Укажи номер телефона</span>}
       </div>
 
       <div className={styles.inputWrap}>

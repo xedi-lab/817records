@@ -4,6 +4,7 @@ import { Loader } from './components/Loader'
 import { useTheme } from './hooks/useTheme'
 import { initTwa, getTwaUser, haptic } from './lib/twa'
 import { api } from './lib/api'
+import { toast } from './lib/toast'
 import { Header } from './components/Header'
 import { BottomNav, type NavTab } from './components/BottomNav'
 import { Button } from './components/Button'
@@ -74,7 +75,6 @@ const STEP_TITLES: Record<BookingStep, string> = {
 const STEPS: BookingStep[] = ['date', 'time', 'duration', 'contact', 'summary', 'done']
 
 export default function App() {
-  // ALL hooks at top — no conditional calls
   const [splashDone, setSplashDone] = useState(false)
   const [tgUser, setTgUser] = useState(() => getTwaUser())
   const [tab, setTab] = useState<NavTab>('home')
@@ -82,7 +82,9 @@ export default function App() {
   const [draft, setDraft] = useState<BookingDraft>(emptyDraft())
   const [tabOverlay, setTabOverlay] = useState(false)
   const [tabOverlayLeaving, setTabOverlayLeaving] = useState(false)
+  const [toastState, setToastState] = useState<{ msg: string; type: 'success' | 'error'; id: number } | null>(null)
   const overlayTimers = useRef<ReturnType<typeof setTimeout>[]>([])
+  const toastTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
   useTheme()
 
   const isAdmin = tgUser ? ADMIN_IDS.includes(tgUser.id) : false
@@ -94,6 +96,15 @@ export default function App() {
       setTgUser(user)
       api.trackVisit({ telegram_id: user.id, first_name: user.first_name, username: user.username }).catch(() => {})
     }
+  }, [])
+
+  useEffect(() => {
+    return toast._subscribe((msg, type) => {
+      const id = Date.now()
+      clearTimeout(toastTimer.current)
+      setToastState({ msg, type, id })
+      toastTimer.current = setTimeout(() => setToastState(null), 2800)
+    })
   }, [])
 
   function startBooking() {
@@ -116,7 +127,6 @@ export default function App() {
     overlayTimers.current = [t1, t2]
   }
 
-  // ── Build main content ─────────────────────────────────────────────────────
   let content: React.ReactNode
 
   if (booking !== null) {
@@ -180,13 +190,17 @@ export default function App() {
     )
   }
 
-  // ── Render ─────────────────────────────────────────────────────────────────
   return (
     <>
       {content}
       {tabOverlay && (
         <div className={[styles.tabOverlay, tabOverlayLeaving ? styles.tabOverlayLeaving : ''].join(' ')}>
           <Loader />
+        </div>
+      )}
+      {toastState && (
+        <div className={[styles.toast, toastState.type === 'error' ? styles.toastError : ''].join(' ')}>
+          {toastState.type === 'success' ? '✓ ' : '✕ '}{toastState.msg}
         </div>
       )}
       {!splashDone && <SplashScreen onDone={() => setSplashDone(true)} />}

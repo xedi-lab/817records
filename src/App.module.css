@@ -19,6 +19,38 @@
   pointer-events: none;
 }
 
+/* ── Toast ── */
+.toast {
+  position: fixed;
+  top: calc(14px + env(safe-area-inset-top, 0px));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9000;
+  background: rgba(28, 28, 28, 0.96);
+  border: 1px solid rgba(255,255,255,0.13);
+  border-radius: 99px;
+  padding: 10px 22px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #ffffff;
+  white-space: nowrap;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.5);
+  animation: toast-in 0.28s cubic-bezier(0.16,1,0.3,1) both;
+  pointer-events: none;
+}
+.toastError { border-color: rgba(229,57,53,0.35); color: #ff6b6b; }
+.toastLeaving { animation: toast-out 0.22s ease forwards; }
+@keyframes toast-in {
+  from { opacity: 0; transform: translateX(-50%) translateY(-10px) scale(0.95); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0)     scale(1); }
+}
+@keyframes toast-out {
+  from { opacity: 1; transform: translateX(-50%) translateY(0); }
+  to   { opacity: 0; transform: translateX(-50%) translateY(-6px); }
+}
+
 /* ── Confetti ── */
 .confettiWrap {
   position: absolute;

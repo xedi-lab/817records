@@ -1,12 +1,25 @@
 const BASE = import.meta.env.VITE_API_URL ?? '/_/backend'
 
 async function req<T>(path: string, opts?: RequestInit): Promise<T> {
-  const res = await fetch(`${BASE}${path}`, {
-    headers: { 'Content-Type': 'application/json' },
-    ...opts,
-  })
-  if (!res.ok) throw new Error(`API ${res.status}: ${await res.text()}`)
-  return res.json()
+  const controller = new AbortController()
+  const tid = setTimeout(() => controller.abort(), 12000)
+  try {
+    const res = await fetch(`${BASE}${path}`, {
+      headers: { 'Content-Type': 'application/json' },
+      signal: controller.signal,
+      ...opts,
+    })
+    if (!res.ok) {
+      const body = await res.text().catch(() => '')
+      throw new Error(`API ${res.status}: ${body}`)
+    }
+    return res.json()
+  } catch (e: any) {
+    if (e?.name === 'AbortError') throw new Error('Timeout')
+    throw e
+  } finally {
+    clearTimeout(tid)
+  }
 }
 
 export const api = {
