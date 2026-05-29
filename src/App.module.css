@@ -1,9 +1,12 @@
 /* ── Tab transition overlay ── */
 .tabOverlay {
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: var(--nav-height);   /* не перекрываем навбар */
   background: #0d0d0d;
-  z-index: 200;
+  z-index: 50;                 /* ниже nav (z-index:100), выше контента */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -14,6 +17,24 @@
 .tabOverlayLeaving {
   opacity: 0;
   pointer-events: none;
+}
+
+/* ── Confetti ── */
+.confettiWrap {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.confettiPiece {
+  position: absolute;
+  border-radius: 2px;
+  animation: confetti-fly 1.1s ease-out forwards;
+}
+@keyframes confetti-fly {
+  0%   { opacity: 1; transform: translate(0,0) rotate(0deg) scale(1); }
+  75%  { opacity: 1; }
+  100% { opacity: 0; transform: translate(var(--dx), var(--dy)) rotate(var(--rot)) scale(0.4); }
 }
 
 .tabContent {

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { SplashScreen } from './components/SplashScreen'
 import { Loader } from './components/Loader'
 import { useTheme } from './hooks/useTheme'
@@ -21,6 +21,45 @@ import type { BookingDraft, BookingStep } from './types'
 import styles from './App.module.css'
 
 const ADMIN_IDS = [7639287231]
+
+const CONFETTI_COLORS = ['#ffffff', '#d97706', '#f59e0b', '#fcd34d', '#c0c0c0', '#e5e7eb']
+
+function Confetti() {
+  const pieces = useMemo(() => Array.from({ length: 40 }, (_, i) => ({
+    id: i,
+    color: CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)],
+    left: `${40 + Math.random() * 20}%`,
+    top: `${30 + Math.random() * 20}%`,
+    width: 4 + Math.random() * 7,
+    height: Math.random() > 0.5 ? 4 + Math.random() * 7 : 10 + Math.random() * 10,
+    borderRadius: Math.random() > 0.4 ? '50%' : '2px',
+    duration: 0.8 + Math.random() * 0.7,
+    delay: Math.random() * 0.35,
+    dx: `${(Math.random() - 0.5) * 120}vw`,
+    dy: `${-40 - Math.random() * 60}vh`,
+    rot: `${(Math.random() - 0.5) * 540}deg`,
+  })), [])
+
+  return (
+    <div className={styles.confettiWrap}>
+      {pieces.map(p => (
+        <div
+          key={p.id}
+          className={styles.confettiPiece}
+          style={{
+            left: p.left, top: p.top,
+            width: p.width, height: p.height,
+            background: p.color,
+            borderRadius: p.borderRadius,
+            animationDuration: `${p.duration}s`,
+            animationDelay: `${p.delay}s`,
+            '--dx': p.dx, '--dy': p.dy, '--rot': p.rot,
+          } as React.CSSProperties}
+        />
+      ))}
+    </div>
+  )
+}
 
 const emptyDraft = (): BookingDraft => ({
   date: null, dateLabel: null, startTime: null, endTime: null,
@@ -113,6 +152,7 @@ export default function App() {
           )}
           {booking === 'done' && (
             <div className={styles.doneScreen}>
+              <Confetti />
               <div className={styles.doneIcon}>✓</div>
               <h2 className={styles.doneTitle}>Заявка отправлена!</h2>
               <p className={styles.doneSub}>Рассмотрим и уведомим тебя в Telegram</p>

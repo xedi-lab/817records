@@ -119,7 +119,7 @@ def get_slots(date: str, db: Session = Depends(models.get_db)):
 # ── Bookings ─────────────────────────────────────────────────────────────────
 
 @app.post("/bookings", status_code=201)
-def create_booking(data: BookingCreate, db: Session = Depends(models.get_db)):
+async def create_booking(data: BookingCreate, db: Session = Depends(models.get_db)):
     booking = models.Booking(**data.model_dump())
     db.add(booking)
     client = db.get(models.Client, data.telegram_id)
