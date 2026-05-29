@@ -55,7 +55,7 @@ export function MediaPage() {
           <p className={styles.eyebrow}>Контакты</p>
           <div className={styles.contactsList}>
             <ContactRow label="Telegram" value="@msc817" href="https://t.me/msc817" />
-            <ContactRow label="Адрес"    value="г. Москва, м. Бутырская, Огородный пр. 8с1" />
+            <ContactRow label="Адрес"    value="г. Москва, м. Бутырская, Огородный пр. 8с1" stacked />
             <ContactRow label="Часы"     value="10:00 — 22:00 ежедневно" />
           </div>
         </section>
@@ -74,9 +74,9 @@ function StatCard({ value, label }: { value: string; label: string }) {
   )
 }
 
-function ContactRow({ label, value, href }: { label: string; value: string; href?: string }) {
+function ContactRow({ label, value, href, stacked }: { label: string; value: string; href?: string; stacked?: boolean }) {
   return (
-    <div className={styles.contactRow}>
+    <div className={[styles.contactRow, stacked ? styles.contactRowStacked : ''].join(' ')}>
       <span className={styles.contactLabel}>{label}</span>
       {href
         ? <a href={href} target="_blank" rel="noopener noreferrer" className={styles.contactLink}>{value}</a>
