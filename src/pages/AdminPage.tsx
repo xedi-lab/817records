@@ -98,7 +98,7 @@ function BookingCard({ booking: b, onStatus }: { booking: Booking; onStatus: (id
           <div style={{ fontWeight: 600, fontSize: 14 }}>{b.full_name}</div>
           {b.username && <div style={{ fontSize: 12, color: 'var(--text-secondary)' }}>@{b.username}</div>}
         </div>
-        <span style={{ fontSize: 11, fontWeight: 600, color: { pending: '#d97706', confirmed: '#16a34a', cancelled: 'var(--danger)', completed: 'var(--text-secondary)' }[b.status] }}>
+        <span style={{ fontSize: 11, fontWeight: 600, color: { pending: 'var(--amber)', confirmed: '#16a34a', cancelled: 'var(--danger)', completed: 'var(--text-secondary)' }[b.status] }}>
           {STATUS_LABEL[b.status]}
         </span>
       </div>
@@ -143,7 +143,7 @@ function ClientCard({ client: c }: { client: Client }) {
 function Stat({ label, value, accent, span2 }: { label: string; value: number; accent?: boolean; span2?: boolean }) {
   return (
     <div className={[styles.statCard, span2 ? styles.span2 : ''].join(' ')}>
-      <div style={{ fontSize: 36, fontWeight: 900, lineHeight: 1, color: accent ? '#d97706' : 'var(--text)' }}>{value}</div>
+      <div style={{ fontSize: 36, fontWeight: 900, lineHeight: 1, color: accent ? 'var(--amber)' : 'var(--text)' }}>{value}</div>
       <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 4 }}>{label}</div>
     </div>
   )

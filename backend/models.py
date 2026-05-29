@@ -2,7 +2,9 @@ from sqlalchemy import create_engine, Column, Integer, String, DateTime, Text
 from sqlalchemy.orm import DeclarativeBase, Session
 from datetime import datetime
 
-engine = create_engine("sqlite:///./817records.db", connect_args={"check_same_thread": False})
+import os as _os
+_db_url = _os.getenv("DATABASE_URL", "sqlite:////tmp/817records.db")
+engine = create_engine(_db_url, connect_args={"check_same_thread": False})
 
 class Base(DeclarativeBase):
     pass

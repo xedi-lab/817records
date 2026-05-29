@@ -96,7 +96,7 @@
   width: 3px;
   height: 3px;
   border-radius: 50%;
-  background: #d97706;
+  background: var(--amber);
 }
 
 .calDaySelected { background: #ffffff !important; }

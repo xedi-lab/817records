@@ -46,7 +46,7 @@
   letter-spacing: -1px;
   color: var(--text);
 }
-.quickAccent { color: #d97706; }
+.quickAccent { color: var(--amber); }
 
 .quickLabel {
   font-size: 10px;
@@ -124,7 +124,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: #d97706;
+  background: var(--amber);
   color: white;
   font-size: 11px;
   font-weight: 700;
@@ -183,7 +183,7 @@
   color: var(--text);
 }
 
-.statVal.amber { color: #d97706; }
+.statVal.amber { color: var(--amber); }
 
 .statLabel {
   font-size: 12px;
@@ -254,6 +254,17 @@
 .actOk     { color: #16a34a; }
 .actCancel { color: #dc2626; }
 .actDone   { color: var(--text-secondary); font-weight: 500; }
+.actBtn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.actSpinner {
+  display: inline-block;
+  width: 14px; height: 14px;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: act-spin 0.65s linear infinite;
+}
+@keyframes act-spin { to { transform: rotate(360deg); } }
 
 /* Client card */
 .clientCard {
@@ -472,7 +483,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: #d97706;
+  background: var(--amber);
   color: white;
   font-size: 10px;
   font-weight: 700;
@@ -489,7 +500,7 @@
   display: inline-block;
   margin-right: 5px;
 }
-.dot-pending   { background: #d97706; }
+.dot-pending   { background: var(--amber); }
 .dot-confirmed { background: #16a34a; }
 .dot-cancelled { background: #dc2626; }
 .dot-completed { background: var(--text-secondary); }

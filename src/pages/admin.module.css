@@ -19,7 +19,7 @@
 .tabActive { color: var(--text); border-bottom-color: var(--accent); font-weight: 600; }
 
 .badge {
-  background: #d97706; color: white;
+  background: var(--amber); color: white;
   font-size: 10px; font-weight: 700;
   border-radius: 99px; padding: 1px 6px;
   line-height: 1.4;

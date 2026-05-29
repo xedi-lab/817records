@@ -25,6 +25,7 @@ export function BookingsList() {
   const [filter, setFilter] = useState<BookingStatus | 'all'>('all')
   const [pending, setPending] = useState(0)
   const [loading, setLoading] = useState(true)
+  const [actionLoading, setActionLoading] = useState<number | null>(null)
 
   useEffect(() => {
     api.getBookings({ limit: 100 }).then(r => {
@@ -35,8 +36,15 @@ export function BookingsList() {
   }, [])
 
   async function changeStatus(id: number, status: BookingStatus) {
-    await api.updateBookingStatus(id, status)
-    setBookings(prev => prev.map(b => b.id === id ? { ...b, status } : b))
+    setActionLoading(id)
+    try {
+      await api.updateBookingStatus(id, status)
+      setBookings(prev => prev.map(b => b.id === id ? { ...b, status } : b))
+      if (status !== 'pending') {
+        setPending(prev => Math.max(0, prev - 1))
+      }
+    } catch {}
+    setActionLoading(null)
   }
 
   const filtered = filter === 'all' ? bookings : bookings.filter(b => b.status === filter)
@@ -89,13 +97,31 @@ export function BookingsList() {
           {b.comment && <div className={styles.bookingComment}>"{b.comment}"</div>}
           {b.status === 'pending' && (
             <div className={styles.bookingActions}>
-              <button className={[styles.actBtn, styles.actOk].join(' ')} onClick={() => changeStatus(b.id, 'confirmed')}>Подтвердить</button>
-              <button className={[styles.actBtn, styles.actCancel].join(' ')} onClick={() => changeStatus(b.id, 'cancelled')}>Отменить</button>
+              <button
+                className={[styles.actBtn, styles.actOk].join(' ')}
+                onClick={() => changeStatus(b.id, 'confirmed')}
+                disabled={actionLoading !== null}
+              >
+                {actionLoading === b.id ? <span className={styles.actSpinner} /> : 'Подтвердить'}
+              </button>
+              <button
+                className={[styles.actBtn, styles.actCancel].join(' ')}
+                onClick={() => changeStatus(b.id, 'cancelled')}
+                disabled={actionLoading !== null}
+              >
+                {actionLoading === b.id ? <span className={styles.actSpinner} /> : 'Отменить'}
+              </button>
             </div>
           )}
           {b.status === 'confirmed' && (
             <div className={styles.bookingActions}>
-              <button className={[styles.actBtn, styles.actDone].join(' ')} onClick={() => changeStatus(b.id, 'completed')}>Завершить</button>
+              <button
+                className={[styles.actBtn, styles.actDone].join(' ')}
+                onClick={() => changeStatus(b.id, 'completed')}
+                disabled={actionLoading !== null}
+              >
+                {actionLoading === b.id ? <span className={styles.actSpinner} /> : 'Завершить'}
+              </button>
             </div>
           )}
         </div>

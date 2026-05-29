@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
@@ -119,7 +119,7 @@ def get_slots(date: str, db: Session = Depends(models.get_db)):
 # ── Bookings ─────────────────────────────────────────────────────────────────
 
 @app.post("/bookings", status_code=201)
-async def create_booking(data: BookingCreate, db: Session = Depends(models.get_db)):
+def create_booking(data: BookingCreate, background_tasks: BackgroundTasks, db: Session = Depends(models.get_db)):
     booking = models.Booking(**data.model_dump())
     db.add(booking)
     client = db.get(models.Client, data.telegram_id)
@@ -137,8 +137,39 @@ async def create_booking(data: BookingCreate, db: Session = Depends(models.get_d
         ))
     db.commit()
     db.refresh(booking)
-    asyncio.create_task(notify_new_booking(booking))
+    # Snapshot scalar fields before session close so background task can access them
+    booking_data = {
+        "id": booking.id, "full_name": booking.full_name,
+        "username": booking.username, "date": booking.date,
+        "start_time": booking.start_time, "end_time": booking.end_time,
+        "hours": booking.hours, "comment": booking.comment,
+    }
+    background_tasks.add_task(_send_booking_notify, booking_data)
     return booking
+
+
+async def _send_booking_notify(data: dict) -> None:
+    from notify import BOT_TOKEN, ADMIN_CHAT_ID
+    import httpx
+    if not BOT_TOKEN or not ADMIN_CHAT_ID:
+        return
+    text = (
+        f"🎙 <b>Новая заявка #{data['id']}</b>\n\n"
+        f"👤 {data['full_name']}"
+        + (f" (@{data['username']})" if data.get('username') else "")
+        + f"\n📅 {data['date']}\n"
+        f"⏰ {data['start_time']} — {data['end_time']} ({data['hours']}ч)\n"
+        + (f"\n💬 {data['comment']}" if data.get('comment') else "")
+    )
+    try:
+        async with httpx.AsyncClient() as client:
+            await client.post(
+                f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage",
+                json={"chat_id": ADMIN_CHAT_ID, "text": text, "parse_mode": "HTML"},
+                timeout=5,
+            )
+    except Exception:
+        pass
 
 
 # ── Admin: Bookings ──────────────────────────────────────────────────────────

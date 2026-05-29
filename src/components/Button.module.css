@@ -16,7 +16,11 @@
 
 .full { width: 100%; }
 
-.primary { background: var(--accent); color: var(--accent-text); }
+.primary {
+  background: var(--accent);
+  color: var(--accent-text);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.18), 0 0 20px rgba(255,255,255,0.10);
+}
 .primary:hover:not(:disabled) { opacity: 0.88; }
 
 .secondary { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
@@ -31,5 +35,9 @@
   border: 2px solid currentColor;
   border-top-color: transparent;
   border-radius: 50%;
-  animation: spin 0.7s linear infinite;
+  animation: btn-spin 0.7s linear infinite;
+}
+
+@keyframes btn-spin {
+  to { transform: rotate(360deg); }
 }

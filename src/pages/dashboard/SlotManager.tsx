@@ -31,6 +31,8 @@ export function SlotManager() {
   const [newStart, setNewStart] = useState('10:00')
   const [newEnd, setNewEnd] = useState('22:00')
   const [saving, setSaving] = useState(false)
+  const [saveError, setSaveError] = useState<string | null>(null)
+  const [deleting, setDeleting] = useState<number | null>(null)
 
   const week = buildWeek()
 
@@ -46,18 +48,29 @@ export function SlotManager() {
   }
 
   async function addSlot(date: string) {
+    if (newStart >= newEnd) {
+      setSaveError('Начало должно быть раньше конца')
+      return
+    }
     setSaving(true)
+    setSaveError(null)
     try {
       const w = await api.createSlotWindow({ date, start_time: newStart, end_time: newEnd })
       setWindows(prev => [...prev, w])
       setAdding(null)
-    } catch {}
+    } catch {
+      setSaveError('Не удалось сохранить. Проверь соединение.')
+    }
     setSaving(false)
   }
 
   async function deleteSlot(id: number) {
-    await api.deleteSlotWindow(id)
-    setWindows(prev => prev.filter(w => w.id !== id))
+    setDeleting(id)
+    try {
+      await api.deleteSlotWindow(id)
+      setWindows(prev => prev.filter(w => w.id !== id))
+    } catch {}
+    setDeleting(null)
   }
 
   if (loading) return <Loader />
@@ -75,11 +88,9 @@ export function SlotManager() {
         return (
           <div key={date} className={styles.slotDay}>
             <div className={styles.slotDayHead}>
-              <div>
-                <div className={styles.slotDayDate}>{formatDate(date)}</div>
-              </div>
+              <div className={styles.slotDayDate}>{formatDate(date)}</div>
               <button
-                onClick={() => setAdding(isAdding ? null : date)}
+                onClick={() => { setAdding(isAdding ? null : date); setSaveError(null) }}
                 style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 500 }}
               >
                 {isAdding ? 'Отмена' : '+ Добавить'}
@@ -91,7 +102,13 @@ export function SlotManager() {
                 {dayWindows.map(w => (
                   <div key={w.id} className={styles.slotItem}>
                     <span className={styles.slotTime}>{w.start_time} — {w.end_time}</span>
-                    <button className={styles.slotDel} onClick={() => deleteSlot(w.id)}>×</button>
+                    <button
+                      className={styles.slotDel}
+                      onClick={() => deleteSlot(w.id)}
+                      disabled={deleting === w.id}
+                    >
+                      {deleting === w.id ? <span className={styles.actSpinner} /> : '×'}
+                    </button>
                   </div>
                 ))}
               </div>
@@ -110,10 +127,13 @@ export function SlotManager() {
                   onChange={e => setNewEnd(e.target.value)}
                   className={styles.timeInput}
                 />
-                <Button onClick={() => addSlot(date)} loading={saving}>
-                  ОК
-                </Button>
+                <Button onClick={() => addSlot(date)} loading={saving}>ОК</Button>
               </div>
+            )}
+            {isAdding && saveError && (
+              <p style={{ fontSize: 12, color: 'var(--danger)', padding: '4px 14px 10px' }}>
+                {saveError}
+              </p>
             )}
           </div>
         )
