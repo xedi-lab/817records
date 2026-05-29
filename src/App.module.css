@@ -1,3 +1,21 @@
+/* ── Tab transition overlay ── */
+.tabOverlay {
+  position: fixed;
+  inset: 0;
+  background: #0d0d0d;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+  transition: opacity 0.22s ease;
+  pointer-events: all;
+}
+.tabOverlayLeaving {
+  opacity: 0;
+  pointer-events: none;
+}
+
 .tabContent {
   flex: 1;
   display: flex;

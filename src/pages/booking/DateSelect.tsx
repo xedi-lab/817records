@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { Card } from '../../components/Card'
 import styles from './booking.module.css'
 
 const MONTHS = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь']
@@ -33,59 +32,59 @@ export function DateSelect({ onSelect }: Props) {
   }
 
   return (
-    <div className={[styles.section, 'fade-in'].join(' ')}>
-      <p className={styles.label}>Выберите дату</p>
-      <Card>
-        <div className={styles.calNav}>
-          <button
-            className={styles.calArrow}
-            onClick={() => setViewDate(new Date(year, month - 1, 1))}
-          >
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M10 3L6 8L10 13" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </button>
-          <span className={styles.calMonth}>{MONTHS[month]} {year}</span>
-          <button
-            className={styles.calArrow}
-            onClick={() => setViewDate(new Date(year, month + 1, 1))}
-          >
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M6 3L10 8L6 13" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </button>
-        </div>
+    <div className={styles.calWrap}>
+      {/* Month navigation */}
+      <div className={styles.calNav}>
+        <button
+          className={styles.calArrow}
+          onClick={() => setViewDate(new Date(year, month - 1, 1))}
+        >
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <path d="M11 4L6 9L11 14" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </button>
+        <span className={styles.calMonth}>
+          {MONTHS[month]}<span className={styles.calYear}> {year}</span>
+        </span>
+        <button
+          className={styles.calArrow}
+          onClick={() => setViewDate(new Date(year, month + 1, 1))}
+        >
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <path d="M7 4L12 9L7 14" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </button>
+      </div>
 
-        <div className={styles.calGrid}>
-          {DAYS.map(d => <div key={d} className={styles.calDayName}>{d}</div>)}
-          {cells.map((date, i) => {
-            if (!date) return <div key={`e-${i}`} />
-            const iso = isoDate(date)
-            const isPast = iso < today
-            const isFuture = iso > maxDate
-            const isDisabled = isPast || isFuture
-            const isSelected = iso === selected
-            const isToday = iso === today
-            return (
-              <button
-                key={iso}
-                disabled={isDisabled}
-                onClick={() => select(date)}
-                className={[
-                  styles.calDay,
-                  !isDisabled ? styles.calDayAvail : '',
-                  isPast ? styles.calDayPast : '',
-                  isToday && !isSelected ? styles.calDayToday : '',
-                  isSelected ? styles.calDaySelected : '',
-                ].join(' ')}
-              >
-                {date.getDate()}
-                {!isDisabled && !isSelected && <span className={styles.dot} />}
-              </button>
-            )
-          })}
-        </div>
-      </Card>
+      {/* Grid */}
+      <div className={styles.calGrid}>
+        {DAYS.map(d => <div key={d} className={styles.calDayName}>{d}</div>)}
+        {cells.map((date, i) => {
+          if (!date) return <div key={`e-${i}`} />
+          const iso = isoDate(date)
+          const isPast = iso < today
+          const isFuture = iso > maxDate
+          const isDisabled = isPast || isFuture
+          const isSelected = iso === selected
+          const isToday = iso === today
+          return (
+            <button
+              key={iso}
+              disabled={isDisabled}
+              onClick={() => select(date)}
+              className={[
+                styles.calDay,
+                isDisabled ? styles.calDayDisabled : styles.calDayAvail,
+                isToday && !isSelected ? styles.calDayToday : '',
+                isSelected ? styles.calDaySelected : '',
+              ].filter(Boolean).join(' ')}
+            >
+              <span className={styles.calDayNum}>{date.getDate()}</span>
+              {isToday && !isSelected && <span className={styles.calTodayDot} />}
+            </button>
+          )
+        })}
+      </div>
     </div>
   )
 }

@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { SplashScreen } from './components/SplashScreen'
+import { Loader } from './components/Loader'
 import { useTheme } from './hooks/useTheme'
 import { initTwa, getTwaUser, haptic } from './lib/twa'
 import { api } from './lib/api'
@@ -40,6 +41,9 @@ export default function App() {
   const [tab, setTab] = useState<NavTab>('home')
   const [booking, setBooking] = useState<BookingStep | null>(null)
   const [draft, setDraft] = useState<BookingDraft>(emptyDraft())
+  const [tabOverlay, setTabOverlay] = useState(false)
+  const [tabOverlayLeaving, setTabOverlayLeaving] = useState(false)
+  const overlayTimers = useRef<ReturnType<typeof setTimeout>[]>([])
   useTheme()
 
   const isAdmin = tgUser ? ADMIN_IDS.includes(tgUser.id) : false
@@ -62,7 +66,15 @@ export default function App() {
     else setBooking(STEPS[idx - 1])
   }
   function handleTabChange(t: NavTab) {
-    haptic('light'); setTab(t)
+    if (t === tab) return
+    haptic('light')
+    setTab(t)
+    overlayTimers.current.forEach(clearTimeout)
+    setTabOverlay(true)
+    setTabOverlayLeaving(false)
+    const t1 = setTimeout(() => setTabOverlayLeaving(true), 380)
+    const t2 = setTimeout(() => { setTabOverlay(false); setTabOverlayLeaving(false) }, 600)
+    overlayTimers.current = [t1, t2]
   }
 
   // ── Build main content ─────────────────────────────────────────────────────
@@ -128,10 +140,15 @@ export default function App() {
     )
   }
 
-  // ── Render: app always visible, splash as overlay on top ──────────────────
+  // ── Render ─────────────────────────────────────────────────────────────────
   return (
     <>
       {content}
+      {tabOverlay && (
+        <div className={[styles.tabOverlay, tabOverlayLeaving ? styles.tabOverlayLeaving : ''].join(' ')}>
+          <Loader />
+        </div>
+      )}
       {!splashDone && <SplashScreen onDone={() => setSplashDone(true)} />}
     </>
   )
