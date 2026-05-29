@@ -9,7 +9,7 @@ export function Clients() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    api.getClients().then(r => setClients(r.clients)).finally(() => setLoading(false))
+    api.getClients().then(r => setClients(r?.clients ?? [])).catch(() => {}).finally(() => setLoading(false))
   }, [])
 
   if (loading) return <Loader />

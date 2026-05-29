@@ -1,53 +1,65 @@
+import { useState } from 'react'
+import { EquipmentPage } from './EquipmentPage'
 import styles from './MediaPage.module.css'
 
 export function MediaPage() {
+  const [showEquipment, setShowEquipment] = useState(false)
+
+  if (showEquipment) {
+    return <EquipmentPage onBack={() => setShowEquipment(false)} />
+  }
+
   return (
     <div className={[styles.page, 'tab-in'].join(' ')}>
-      <div className="page-content">
+      <div className={styles.bg} />
+
+      <div className={styles.content}>
+
         {/* About */}
         <section className={styles.section}>
-          <p className={styles.sectionLabel}>О студии</p>
-          <div className={styles.card}>
-            <p className={styles.about}>
-              817* — камерная студия звукозаписи в Москве. Пространство для тех,
-              кто серьёзно относится к звуку. Профессиональное оборудование,
-              акустика ручной сборки, атмосфера без лишнего.
-            </p>
-          </div>
+          <p className={styles.eyebrow}>О студии</p>
+          <p className={styles.about}>
+            817* — камерная студия звукозаписи в Москве. Пространство для тех,
+            кто серьёзно относится к звуку. Профессиональное оборудование,
+            акустика ручной сборки, атмосфера без лишнего.
+          </p>
         </section>
 
         {/* Stats */}
         <section className={styles.section}>
-          <p className={styles.sectionLabel}>Цифры</p>
+          <p className={styles.eyebrow}>Цифры</p>
           <div className={styles.statsGrid}>
-            <StatCard value="50+" label="Артистов" />
-            <StatCard value="3+" label="Года работы" />
+            <StatCard value="50+"  label="Артистов" />
+            <StatCard value="10+"  label="Лет работы" />
             <StatCard value="500+" label="Сессий" />
             <StatCard value="24/7" label="Поддержка" />
           </div>
         </section>
 
-        {/* Equipment */}
+        {/* Equipment — clickable */}
         <section className={styles.section}>
-          <p className={styles.sectionLabel}>Оборудование</p>
-          <div className={styles.equipList}>
-            <EquipRow icon="🎙" text="Конденсаторный микрофон Neumann U87" />
-            <EquipRow icon="🔊" text="Мониторы Yamaha HS8" />
-            <EquipRow icon="🎛" text="Аудиоинтерфейс Universal Audio Apollo" />
-            <EquipRow icon="💻" text="Apple Mac Studio M2 Ultra" />
-            <EquipRow icon="🎸" text="Акустическая обработка ручной работы" />
-          </div>
+          <p className={styles.eyebrow}>Оборудование</p>
+          <button className={styles.equipCard} onClick={() => setShowEquipment(true)}>
+            <div className={styles.equipCardLeft}>
+              <span className={styles.equipCardTitle}>Наше оборудование</span>
+              <span className={styles.equipCardSub}>NEUMANN · ADAM · Apollo · и др.</span>
+            </div>
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <path d="M7 4l5 5-5 5" stroke="rgba(255,255,255,0.4)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </button>
         </section>
 
         {/* Contacts */}
         <section className={styles.section}>
-          <p className={styles.sectionLabel}>Контакты</p>
-          <div className={styles.card}>
-            <ContactRow label="Telegram" value="@eightonesevenbot" />
-            <ContactRow label="Адрес" value="Москва" />
-            <ContactRow label="Часы" value="10:00 — 22:00 ежедневно" />
+          <p className={styles.eyebrow}>Контакты</p>
+          <div className={styles.contactsList}>
+            <ContactRow label="Telegram" value="@msc817" href="https://t.me/msc817" />
+            <ContactRow label="Адрес"    value="м. Бутырская, Огородный пр. 8с1" />
+            <ContactRow label="Часы"     value="10:00 — 22:00 ежедневно" />
           </div>
         </section>
+
       </div>
     </div>
   )
@@ -62,20 +74,14 @@ function StatCard({ value, label }: { value: string; label: string }) {
   )
 }
 
-function EquipRow({ icon, text }: { icon: string; text: string }) {
-  return (
-    <div className={styles.equipRow}>
-      <span className={styles.equipIcon}>{icon}</span>
-      <span className={styles.equipText}>{text}</span>
-    </div>
-  )
-}
-
-function ContactRow({ label, value }: { label: string; value: string }) {
+function ContactRow({ label, value, href }: { label: string; value: string; href?: string }) {
   return (
     <div className={styles.contactRow}>
       <span className={styles.contactLabel}>{label}</span>
-      <span className={styles.contactValue}>{value}</span>
+      {href
+        ? <a href={href} target="_blank" rel="noopener noreferrer" className={styles.contactLink}>{value}</a>
+        : <span className={styles.contactValue}>{value}</span>
+      }
     </div>
   )
 }

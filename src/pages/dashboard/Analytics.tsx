@@ -21,7 +21,7 @@ export function Analytics() {
 
   useEffect(() => {
     setLoading(true)
-    api.getAnalytics(period).then(setData).finally(() => setLoading(false))
+    api.getAnalytics(period).then(d => { if (d) setData(d) }).catch(() => {}).finally(() => setLoading(false))
   }, [period])
 
   const maxCount = data ? Math.max(...data.by_date.map(d => d.count), 1) : 1

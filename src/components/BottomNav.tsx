@@ -1,6 +1,6 @@
 import styles from './BottomNav.module.css'
 
-export type NavTab = 'home' | 'book' | 'media' | 'dashboard'
+export type NavTab = 'home' | 'book' | 'media' | 'prices' | 'dashboard'
 
 interface Props {
   active: NavTab
@@ -10,9 +10,10 @@ interface Props {
 
 export function BottomNav({ active, onChange, isAdmin }: Props) {
   const tabs = [
-    { id: 'home' as NavTab, label: 'Главная', icon: IconHome },
-    { id: 'book' as NavTab, label: 'Запись', icon: IconCalendar },
-    { id: 'media' as NavTab, label: 'Медиа', icon: IconStar },
+    { id: 'home'   as NavTab, label: 'Главная', icon: IconHome },
+    { id: 'book'   as NavTab, label: 'Запись',  icon: IconCalendar },
+    { id: 'prices' as NavTab, label: 'Цены',    icon: IconPrice },
+    { id: 'media'  as NavTab, label: 'Медиа',   icon: IconStar },
     ...(isAdmin ? [{ id: 'dashboard' as NavTab, label: 'Панель', icon: IconDash }] : []),
   ]
 
@@ -48,6 +49,12 @@ function IconStar({ active }: { active: boolean }) {
   return active
     ? <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
     : <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+}
+
+function IconPrice({ active }: { active: boolean }) {
+  return active
+    ? <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M21.41 11.58L12.41 2.58A2 2 0 0011 2H4a2 2 0 00-2 2v7a2 2 0 00.59 1.41l9 9a2 2 0 002.82 0l7-7a2 2 0 000-2.83zM7 8a1 1 0 110-2 1 1 0 010 2z"/></svg>
+    : <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><circle cx="7" cy="7" r="1" fill="currentColor"/></svg>
 }
 
 function IconDash({ active }: { active: boolean }) {

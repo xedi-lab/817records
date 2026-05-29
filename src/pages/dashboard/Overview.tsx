@@ -8,18 +8,27 @@ export function Overview() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    api.getStats().then(setStats).finally(() => setLoading(false))
+    api.getStats()
+      .then(data => { if (data) setStats(data) })
+      .catch(() => {})
+      .finally(() => setLoading(false))
   }, [])
 
   if (loading) return <Loader />
 
+  if (!stats) return (
+    <p style={{ color: 'var(--text-secondary)', fontSize: 14, textAlign: 'center', padding: '40px 0' }}>
+      Не удалось загрузить данные
+    </p>
+  )
+
   return (
     <div className={styles.statGrid}>
-      <Stat label="Ожидают" value={stats.pending} amber />
-      <Stat label="Подтверждено" value={stats.confirmed} />
-      <Stat label="Всего броней" value={stats.total_bookings} />
-      <Stat label="Клиентов" value={stats.total_clients} />
-      <Stat label="Часов в этом месяце" value={stats.hours_this_month} span2 />
+      <Stat label="Ожидают" value={stats.pending ?? 0} amber />
+      <Stat label="Подтверждено" value={stats.confirmed ?? 0} />
+      <Stat label="Всего броней" value={stats.total_bookings ?? 0} />
+      <Stat label="Клиентов" value={stats.total_clients ?? 0} />
+      <Stat label="Часов в этом месяце" value={stats.hours_this_month ?? 0} span2 />
     </div>
   )
 }

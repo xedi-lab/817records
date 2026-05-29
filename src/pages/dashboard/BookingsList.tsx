@@ -28,9 +28,10 @@ export function BookingsList() {
 
   useEffect(() => {
     api.getBookings({ limit: 100 }).then(r => {
-      setBookings(r.bookings)
-      setPending(r.bookings.filter(b => b.status === 'pending').length)
-    }).finally(() => setLoading(false))
+      const list = r?.bookings ?? []
+      setBookings(list)
+      setPending(list.filter((b: any) => b.status === 'pending').length)
+    }).catch(() => {}).finally(() => setLoading(false))
   }, [])
 
   async function changeStatus(id: number, status: BookingStatus) {

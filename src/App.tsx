@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { SplashScreen } from './components/SplashScreen'
 import { useTheme } from './hooks/useTheme'
 import { initTwa, getTwaUser, haptic } from './lib/twa'
 import { api } from './lib/api'
@@ -6,7 +7,9 @@ import { Header } from './components/Header'
 import { BottomNav, type NavTab } from './components/BottomNav'
 import { Button } from './components/Button'
 import { HomePage } from './pages/HomePage'
+import { BookLandingPage } from './pages/BookLandingPage'
 import { MediaPage } from './pages/MediaPage'
+import { PricingPage } from './pages/PricingPage'
 import { DashboardPage } from './pages/dashboard/DashboardPage'
 import { DateSelect } from './pages/booking/DateSelect'
 import { TimeSelect } from './pages/booking/TimeSelect'
@@ -31,46 +34,44 @@ const STEP_TITLES: Record<BookingStep, string> = {
 const STEPS: BookingStep[] = ['date', 'time', 'duration', 'contact', 'summary', 'done']
 
 export default function App() {
-  const tgUser = getTwaUser()
-  const colorScheme = (window as any).Telegram?.WebApp?.colorScheme ?? 'light'
-  const [theme, toggleTheme] = useTheme(colorScheme)
-
-  const isAdmin = tgUser ? ADMIN_IDS.includes(tgUser.id) : false
-
+  // ALL hooks at top — no conditional calls
+  const [splashDone, setSplashDone] = useState(false)
+  const [tgUser, setTgUser] = useState(() => getTwaUser())
   const [tab, setTab] = useState<NavTab>('home')
   const [booking, setBooking] = useState<BookingStep | null>(null)
   const [draft, setDraft] = useState<BookingDraft>(emptyDraft())
+  useTheme()
+
+  const isAdmin = tgUser ? ADMIN_IDS.includes(tgUser.id) : false
 
   useEffect(() => {
     try { initTwa() } catch {}
-    if (tgUser) {
-      api.trackVisit({ telegram_id: tgUser.id, first_name: tgUser.first_name, username: tgUser.username }).catch(() => {})
+    const user = getTwaUser()
+    if (user) {
+      setTgUser(user)
+      api.trackVisit({ telegram_id: user.id, first_name: user.first_name, username: user.username }).catch(() => {})
     }
   }, [])
 
   function startBooking() {
-    haptic('medium')
-    setDraft(emptyDraft())
-    setBooking('date')
+    haptic('medium'); setDraft(emptyDraft()); setBooking('date')
   }
-
   function handleBookBack() {
     const idx = STEPS.indexOf(booking!)
     if (idx <= 0) { setBooking(null); setTab('home') }
     else setBooking(STEPS[idx - 1])
   }
-
   function handleTabChange(t: NavTab) {
-    haptic('light')
-    setTab(t)
-    if (t === 'book') { startBooking() }
+    haptic('light'); setTab(t)
   }
 
-  // ── Booking flow (full screen, no bottom nav) ──────────────────────────────
+  // ── Build main content ─────────────────────────────────────────────────────
+  let content: React.ReactNode
+
   if (booking !== null) {
-    return (
+    content = (
       <div className="page-no-nav">
-        <Header theme={theme} onToggleTheme={toggleTheme} onBack={handleBookBack} title={STEP_TITLES[booking]} />
+        <Header onBack={handleBookBack} title={STEP_TITLES[booking]} />
         <div className="page-content">
           {booking === 'date' && (
             <DateSelect onSelect={(date, label) => {
@@ -111,20 +112,27 @@ export default function App() {
         </div>
       </div>
     )
+  } else {
+    content = (
+      <div className="page">
+        <Header />
+        <div className={styles.tabContent} key={tab}>
+          {tab === 'home'      && <HomePage userName={tgUser?.first_name} onBook={startBooking} />}
+          {tab === 'book'      && <BookLandingPage onBook={startBooking} />}
+          {tab === 'prices'    && <PricingPage />}
+          {tab === 'media'     && <MediaPage />}
+          {tab === 'dashboard' && <DashboardPage />}
+        </div>
+        <BottomNav active={tab} onChange={handleTabChange} isAdmin={isAdmin} />
+      </div>
+    )
   }
 
-  // ── Main layout with bottom nav ────────────────────────────────────────────
+  // ── Render: app always visible, splash as overlay on top ──────────────────
   return (
-    <div className="page">
-      <Header theme={theme} onToggleTheme={toggleTheme} />
-
-      <div className={styles.tabContent} key={tab}>
-        {tab === 'home'      && <HomePage userName={tgUser?.first_name} onBook={startBooking} />}
-        {tab === 'media'     && <MediaPage />}
-        {tab === 'dashboard' && <DashboardPage />}
-      </div>
-
-      <BottomNav active={tab} onChange={handleTabChange} isAdmin={isAdmin} />
-    </div>
+    <>
+      {content}
+      {!splashDone && <SplashScreen onDone={() => setSplashDone(true)} />}
+    </>
   )
 }

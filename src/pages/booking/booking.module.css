@@ -71,6 +71,7 @@
   padding: 14px 16px;
   background: var(--surface); border: 1px solid var(--border);
   border-radius: var(--radius);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.09), inset 0 0 20px rgba(255,255,255,0.025);
 }
 .priceLabel { font-size: 14px; color: var(--text-secondary); }
 .priceVal { font-size: 20px; font-weight: 700; color: var(--text); }
